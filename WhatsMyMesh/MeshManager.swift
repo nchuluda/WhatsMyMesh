@@ -11,23 +11,15 @@ import SwiftUI
 
 @Observable
 class MeshManager {
-
     private let model = SystemLanguageModel.default
-    
-    var isLoading = false
     
     var hexcodes:[String] = []
     
     var hexAsColor: [Color] {
-        hexcodes.map{ Color(hex: $0)}
+        hexcodes.map{ Color(hex: $0) }
     }
     
-
     func createRandomMesh(for selectedEmotion: String) async throws {
-        
-     
-        
-        isLoading = true
         let instructions = """
             You are a design expert in colors. Please generate a list of hexcodes as strings. I do not want the hashtag included before each color. Each color should ONLY BE 6. Do not number the results or include any conversation in your response.
             ** NEVER INCLUDE # **
@@ -44,13 +36,8 @@ class MeshManager {
         hexcodes = response.content.hexCodes
         
         print(response.content.hexCodes)
-        self.isLoading = false
     }
-    
-    
 }
-
-
 
 @Generable
 struct ColorPalette {

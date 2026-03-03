@@ -5,34 +5,27 @@
 //  Created by Nicholas Gordon on 3/3/26.
 //
 
-//
-
 import SwiftUI
 
-
 struct MeshGradientView: View {
-  
-    
     var hexAsColor: [Color]
     var meshManager: MeshManager
+    
     var body: some View {
         VStack {
-            
             if meshManager.hexAsColor.isEmpty {
                 ProgressView()
             } else {
-                
                 TimelineView(.animation) { timeline in
                     let x = (sin(timeline.date.timeIntervalSince1970) + 1) / 2
                     
-                    MeshGradient(width: 3, height: 3, points: [
+                    MeshGradient(width: 3, height: 3,
+                        points: [
                         [0, 0], [0.5, 0], [1, 0],
                         [0, 0.5], [Float(x), 0.5], [1, 0.5],
                         [0, 1], [0.5, 1], [1, 1]
-                    ], colors:
-                                    
-                                    hexAsColor
-                                 
+                        ],
+                        colors: hexAsColor
                     )
                 }
             }

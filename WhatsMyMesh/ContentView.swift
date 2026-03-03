@@ -8,18 +8,15 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var selectedEmotion: String = "Peaceful"
-    private var emotions = ["Peaceful", "Excited", "Anxious", "Aggressive", "Curious", "Embarassed", "Grief", "Sleepy", "Overwhelmed", "Jealous"]
-    
     @State var isShowingMeshSheet = false
+    @State private var selectedEmotion: String = "Peaceful"
+    
+    private var emotions = ["Peaceful", "Excited", "Anxious", "Aggressive", "Curious", "Embarassed", "Grief", "Sleepy", "Overwhelmed", "Jealous"]
     
     var meshManager = MeshManager()
     
     var body: some View {
         VStack {
-            if meshManager.isLoading {
-                ProgressView()
-            }
             HStack {
                 Text("Selected Emotion:")
                 Picker(selection: $selectedEmotion, label: Text("Select Emotion")) {
@@ -42,12 +39,11 @@ struct ContentView: View {
             .padding()
         }
         .sheet(isPresented: $isShowingMeshSheet) {
+            // onDismiss
             meshManager.hexcodes = []
         } content: {
             MeshGradientView(hexAsColor: meshManager.hexAsColor, meshManager: meshManager)
         }
-        
-
     }
 }
 
