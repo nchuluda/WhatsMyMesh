@@ -16,23 +16,21 @@ import SwiftUI
 
 
 struct ContentView: View {
-    
+    @State private var selectedEmotion: String? = "Peaceful"
+    private var emotions = ["Peaceful", "Excited", "Anxious", "Aggressive", "Curious", "Embarassed", "Grief", "Sleepy", "Overwhelmed", "Jealous"]
     
     var body: some View {
         VStack {
-            TimelineView(.animation) { timeline in
-                let x = (sin(timeline.date.timeIntervalSince1970) + 1) / 2
-
-                MeshGradient(width: 3, height: 3, points: [
-                    [0, 0], [0.5, 0], [1, 0],
-                    [0, 0.5], [Float(x), 0.5], [1, 0.5],
-                    [0, 1], [0.5, 1], [1, 1]
-                ], colors: [
-                    .red, .red, .red,
-                    .red, .orange, .red,
-                    .red, .red, .init(hex: "FFFFFF"),
-                ])
+            HStack {
+                Text("Selected Emotion:")
+                Picker(selection: $selectedEmotion, label: Text("Select Emotion")) {
+                    ForEach(emotions, id: \.self) {
+                        Text($0)
+                    }
+                }
+                .pickerStyle(.inline)
             }
+            .padding()
         }
     }
 }
