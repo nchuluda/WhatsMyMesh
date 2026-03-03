@@ -25,8 +25,3 @@ import Playgrounds
 }
 
 
-@Generable
-struct ColorPalette {
-//    @Guide(description: "Hexcodes as strings.")
-    var hexCodes: [String]
-}

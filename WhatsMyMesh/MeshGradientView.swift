@@ -11,48 +11,37 @@ import SwiftUI
 
 
 struct MeshGradientView: View {
-    var hexcodes:[String] = [
-        "#FF6B6B",
-        "#4ECDC4",
-        "#1A535C",
-        "#FFE66D",
-        "#2EC4B6",
-        "#6A4C93",
-        "#F4A261",
-        "#264653",
-        "#E76F51"
-    ]
+  
     
-    var hexAsColor: [Color] {
-        hexcodes.map{ Color(hex: $0)}
-    }
-    
+    var hexAsColor: [Color]
+    var meshManager: MeshManager
     var body: some View {
         VStack {
             
-            ForEach(hexAsColor, id: \.self) { hexcode in
+            if meshManager.hexAsColor.isEmpty {
+                ProgressView()
+            } else {
                 
-            }
-            
-            TimelineView(.animation) { timeline in
-                let x = (sin(timeline.date.timeIntervalSince1970) + 1) / 2
-
-                MeshGradient(width: 3, height: 3, points: [
-                    [0, 0], [0.5, 0], [1, 0],
-                    [0, 0.5], [Float(x), 0.5], [1, 0.5],
-                    [0, 1], [0.5, 1], [1, 1]
-                ], colors:
-                
-                   hexAsColor
-        
-                )
+                TimelineView(.animation) { timeline in
+                    let x = (sin(timeline.date.timeIntervalSince1970) + 1) / 2
+                    
+                    MeshGradient(width: 3, height: 3, points: [
+                        [0, 0], [0.5, 0], [1, 0],
+                        [0, 0.5], [Float(x), 0.5], [1, 0.5],
+                        [0, 1], [0.5, 1], [1, 1]
+                    ], colors:
+                                    
+                                    hexAsColor
+                                 
+                    )
+                }
             }
         }
     }
 }
 
 #Preview {
-    ContentView()
+    MeshGradientView(hexAsColor: [.red, .blue, .yellow], meshManager: MeshManager())
 }
 
 
