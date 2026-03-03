@@ -17,10 +17,14 @@ import Playgrounds
     let session = LanguageModelSession(instructions: instructions)
     
     let prompt = Prompt {
-       """
-       Generate 9 colors to use in a mesh gradient
-       """
+        "Generate 9 colors to use in a mesh gradient"
     }
     
     let response = try await session.respond(to: prompt)
+}
+
+
+@Generable
+struct ColorPalette {
+    var hexCodes: [String]
 }
