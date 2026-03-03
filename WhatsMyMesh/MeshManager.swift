@@ -16,24 +16,14 @@ class MeshManager {
     
     var isLoading = false
     
-    var hexcodes:[String] = [
-//        "#FF6B6B",
-//        "#4ECDC4",
-//        "#1A535C",
-//        "#FFE66D",
-//        "#2EC4B6",
-//        "#6A4C93",
-//        "#F4A261",
-//        "#264653",
-//        "#E76F51"
-    ]
+    var hexcodes:[String] = []
     
     var hexAsColor: [Color] {
         hexcodes.map{ Color(hex: $0)}
     }
     
 
-    func createRandomMesh() async throws {
+    func createRandomMesh(for selectedEmotion: String) async throws {
         
      
         
@@ -46,7 +36,7 @@ class MeshManager {
         let session = LanguageModelSession(instructions: instructions)
         
         let prompt = Prompt {
-            "Generate 9 colors to use in a mesh gradient"
+            "Generate 9 colors to use in a mesh gradient. Choose colors I might see in an amethyst crystal."
         }
         
         let response = try await session.respond(to: prompt, generating: ColorPalette.self)
