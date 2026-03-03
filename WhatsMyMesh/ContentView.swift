@@ -5,15 +5,7 @@
 //  Created by Nathan on 3/3/26.
 //
 
-//
-//  ContentView.swift
-//  MeshGradientExample
-//
-//  Created by Nicholas Gordon on 3/3/26.
-//
-
 import SwiftUI
-
 
 struct ContentView: View {
     @State private var selectedEmotion: String? = "Peaceful"
@@ -38,5 +30,3 @@ struct ContentView: View {
 #Preview {
     ContentView()
 }
-
-
