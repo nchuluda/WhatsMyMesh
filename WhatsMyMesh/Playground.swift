@@ -11,7 +11,8 @@ import Playgrounds
 #Playground {
     
     let instructions = """
-        You are a design expert in colors. Always generate as hexcodes
+        You are a design expert in colors. Please generate a list of hexcodes as strings. I do not want the hashtag included before each color. Each color should ONLY BE 6. Do not number the results or include any conversation in your response.
+        ** NEVER INCLUDE # **
         """
     
     let session = LanguageModelSession(instructions: instructions)
@@ -26,5 +27,6 @@ import Playgrounds
 
 @Generable
 struct ColorPalette {
+//    @Guide(description: "Hexcodes as strings.")
     var hexCodes: [String]
 }
