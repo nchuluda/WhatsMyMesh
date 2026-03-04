@@ -13,7 +13,7 @@ struct ContentView: View {
     
     private var emotions = ["Peaceful", "Excited", "Anxious", "Aggressive", "Curious", "Embarassed", "Grief", "Sleepy", "Overwhelmed", "Jealous"]
     
-    var meshManager = MeshManager()
+    var foundationManager = FoundationManager()
     
     var body: some View {
         VStack {

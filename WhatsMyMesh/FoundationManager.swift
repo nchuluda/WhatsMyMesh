@@ -11,7 +11,7 @@ import MusicKit
 import SwiftUI
 
 @Observable
-class MeshManager {
+class FoundationManager {
     private let model = SystemLanguageModel.default
     
     var hexcodes:[String] = []
