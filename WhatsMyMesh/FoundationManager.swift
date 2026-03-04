@@ -21,7 +21,7 @@ class FoundationManager {
         hexcodes.map{ Color(hex: $0) }
     }
     
-    func createRandomMesh(for selectedEmotion: String) async throws {
+    func createRandomMesh(for selectedGem: String) async throws {
         let instructions = """
             You are a design expert in colors. Please generate a list of hexcodes as strings. I do not want the hashtag included before each color. Each color should ONLY BE 6. Do not number the results or include any conversation in your response.
             ** NEVER INCLUDE # **
@@ -30,7 +30,7 @@ class FoundationManager {
         let session = LanguageModelSession(instructions: instructions)
         
         let prompt = Prompt {
-            "Generate 9 colors to use in a mesh gradient. Choose colors I might see in an amethyst crystal."
+            "Generate 9 colors to use in a mesh gradient. Choose colors that represent a \(selectedGem)."
         }
         
         let response = try await session.respond(to: prompt, generating: ColorPalette.self)
@@ -42,23 +42,42 @@ class FoundationManager {
     
     // MARK: Generate a poem
     
-    var poem: String = ""
+    var poem: String?
     
     func generatePoem(emotion: String, gemstone: String) async throws {
-        let instructions = """
-    Write a haiku inspired by the emotion "\(emotion)" and the gemstone "\(gemstone)".
-    
-    Requirements:
-    - 12–16 lines
-    - Free verse
-    - Vivid sensory imagery
-    - Use the gemstone as a central metaphor
-    - Do not mention instructions
-    - Do not include a title
-    - Do not explain the poem
-    
-    The poem should feel emotionally immersive and cohesive.
-    """
+        let instructions =
+            """
+                Compose a traditional 5-7-5 haiku.
+
+                Requirements:
+                - Three lines only
+                - 5 syllables
+                - 7 syllables
+                - 5 syllables
+                - The gemstone must embody the emotion
+                - Use vivid sensory imagery
+                - No title
+                - No commentary
+
+                Output only the haiku.
+                """
+        
+        let session = LanguageModelSession(instructions: instructions)
+        
+        let prompt = Prompt {
+            """
+                Emotion: \(emotion)
+                Gemstone: \(gemstone)
+
+                Create the haiku based on these.
+                """
+        }
+        
+        let response = try await session.respond(to: prompt)
+        
+        withAnimation(.easeIn(duration: 0.6)) {
+            poem = response.content
+        }
         
         
     }

@@ -44,7 +44,8 @@ struct ContentView: View {
             
             Button("Make My Gemstone") {
                 Task {
-                    try await foundationManager.createRandomMesh(for: selectedEmotion)
+                    try await foundationManager.createRandomMesh(for: selectedGemstone)
+                    try await foundationManager.generatePoem(emotion: selectedEmotion, gemstone: selectedGemstone)
                   
                 }
                 isShowingMeshSheet = true
@@ -56,6 +57,7 @@ struct ContentView: View {
         .sheet(isPresented: $isShowingMeshSheet) {
             // onDismiss
             foundationManager.hexcodes = []
+            foundationManager.poem = nil
         } content: {
             MeshGradientView(hexAsColor: foundationManager.hexAsColor, meshManager: foundationManager)
         }

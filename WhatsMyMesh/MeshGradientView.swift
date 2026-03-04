@@ -16,28 +16,33 @@ struct MeshGradientView: View {
             if meshManager.hexAsColor.isEmpty {
                 ProgressView()
             } else {
-                TimelineView(.animation) { timeline in
-                    let x = (sin(timeline.date.timeIntervalSince1970) + 1) / 2
-                    
-                    MeshGradient(width: 3, height: 3,
-                        points: [
-                        [0, 0], [0.5, 0], [1, 0],
-                        [0, 0.5], [Float(x), 0.5], [1, 0.5],
-                        [0, 1], [0.5, 1], [1, 1]
-                        ],
-                        colors: hexAsColor
-                    )
-                    .clipShape(GemstoneShape())
-                    .overlay {
-                        GemstoneFacets()
-                            .stroke(.white.opacity(0.35), lineWidth: 1)
+                VStack {
+                    TimelineView(.animation) { timeline in
+                        let x = (sin(timeline.date.timeIntervalSince1970) + 1) / 2
+                        
+                        MeshGradient(width: 3, height: 3,
+                            points: [
+                            [0, 0], [0.5, 0], [1, 0],
+                            [0, 0.5], [Float(x), 0.5], [1, 0.5],
+                            [0, 1], [0.5, 1], [1, 1]
+                            ],
+                            colors: hexAsColor
+                        )
+                        .clipShape(GemstoneShape())
+                        .overlay {
+                            GemstoneFacets()
+                                .stroke(.white.opacity(0.35), lineWidth: 1)
+                        }
+                        .overlay {
+                            GemstoneShape()
+                                .stroke(.white.opacity(0.6), lineWidth: 2)
+                        }
+                        .aspectRatio(5/6, contentMode: .fit)
+                        .padding()
                     }
-                    .overlay {
-                        GemstoneShape()
-                            .stroke(.white.opacity(0.6), lineWidth: 2)
+                    if let poem = meshManager.poem {
+                        Text(poem)
                     }
-                    .aspectRatio(5/6, contentMode: .fit)
-                    .padding()
                 }
             }
         }
