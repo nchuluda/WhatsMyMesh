@@ -65,6 +65,18 @@ struct MeshGradientView: View {
                         .foregroundStyle(.secondary)
                 }
                 .padding()
+                            .font(.largeTitle)
+                    }
+                }
+                .padding()
+            } else if !meshManager.hexAsColor.isEmpty {
+                HStack {
+                    ProgressView()
+                    Text("Finding a song...")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                .padding()
             }
         }
         

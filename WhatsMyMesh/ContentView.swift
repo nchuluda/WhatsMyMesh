@@ -44,7 +44,8 @@ struct ContentView: View {
             
             Button("Make My Gemstone") {
                 Task {
-                    try await meshManager.createMeshAndFindSong(for: selectedEmotion)
+                    try await meshManager.createMeshAndFindSong(for: selectedGemstone)
+                    try await foundationManager.generatePoem(emotion: selectedEmotion, gemstone: selectedGemstone)
                     try await meshManager.playSong()
                 }
                 isShowingMeshSheet = true
@@ -57,10 +58,12 @@ struct ContentView: View {
             await meshManager.requestMusicAuthorization()
         }
         .sheet(isPresented: $isShowingMeshSheet) {
-            // onDismiss
             meshManager.hexcodes = []
             meshManager.currentSong = nil
             meshManager.stopSong()
+            foundationManager.poem = nil
+            meshManager.stopSong()
+            
         } content: {
             MeshGradientView(hexAsColor: meshManager.hexAsColor, meshManager: meshManager)
         }
