@@ -27,6 +27,17 @@ struct MeshGradientView: View {
                         ],
                         colors: hexAsColor
                     )
+                    .clipShape(GemstoneShape())
+                    .overlay {
+                        GemstoneFacets()
+                            .stroke(.white.opacity(0.35), lineWidth: 1)
+                    }
+                    .overlay {
+                        GemstoneShape()
+                            .stroke(.white.opacity(0.6), lineWidth: 2)
+                    }
+                    .aspectRatio(5/6, contentMode: .fit)
+                    .padding()
                 }
             }
         }
