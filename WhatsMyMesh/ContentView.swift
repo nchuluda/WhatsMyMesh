@@ -29,8 +29,8 @@ struct ContentView: View {
             
             Button("Create Mesh") {
                 Task {
-                    try await meshManager.createRandomMesh(for: selectedEmotion)
-                  
+                    try await meshManager.createMeshAndFindSong(for: selectedEmotion)
+                    try await meshManager.playSong()
                 }
                 isShowingMeshSheet = true
             }
@@ -38,9 +38,14 @@ struct ContentView: View {
             .tint(.green)
             .padding()
         }
+        .task {
+            await meshManager.requestMusicAuthorization()
+        }
         .sheet(isPresented: $isShowingMeshSheet) {
             // onDismiss
             meshManager.hexcodes = []
+            meshManager.currentSong = nil
+            meshManager.stopSong()
         } content: {
             MeshGradientView(hexAsColor: meshManager.hexAsColor, meshManager: meshManager)
         }

@@ -7,6 +7,7 @@
 
 import Foundation
 import FoundationModels
+import MusicKit
 import SwiftUI
 
 @Observable
@@ -14,6 +15,9 @@ class MeshManager {
     private let model = SystemLanguageModel.default
     
     var hexcodes:[String] = []
+    var currentSong: SongInfo?
+    var isPlaying: Bool = false
+    var musicAuthorizationStatus: MusicAuthorization.Status = .notDetermined
     
     var hexAsColor: [Color] {
         hexcodes.map{ Color(hex: $0) }
@@ -36,6 +40,68 @@ class MeshManager {
         hexcodes = response.content.hexCodes
         
         print(response.content.hexCodes)
+    }
+    
+    // MARK: - MusicKit
+    
+    func requestMusicAuthorization() async {
+        let status = await MusicAuthorization.request()
+        musicAuthorizationStatus = status
+    }
+    
+    func findSong(for selectedEmotion: String) async throws {
+        if musicAuthorizationStatus != .authorized {
+            await requestMusicAuthorization()
+        }
+        guard musicAuthorizationStatus == .authorized else { return }
+        
+        let songStore = SongStore()
+        let tool = SearchMusicTool(songStore: songStore)
+        
+        let instructions = """
+            You are a music expert. Given an emotion, use the searchMusic tool to find \
+            a song that matches that mood. Generate a good search query for the emotion.
+            """
+        
+        let session = LanguageModelSession(
+            tools: [tool],
+            instructions: instructions
+        )
+        
+        let prompt = Prompt {
+            "Find a song that matches the emotion: \(selectedEmotion)"
+        }
+        
+        let _ = try await session.respond(to: prompt)
+        
+        if let song = await songStore.retrieve() {
+            currentSong = SongInfo(
+                title: song.title,
+                artistName: song.artistName,
+                song: song
+            )
+        }
+    }
+    
+    func createMeshAndFindSong(for selectedEmotion: String) async throws {
+        async let meshTask: () = createRandomMesh(for: selectedEmotion)
+        async let musicTask: () = findSong(for: selectedEmotion)
+        
+        let _ = try await (meshTask, musicTask)
+    }
+    
+    func playSong() async throws {
+        guard let songInfo = currentSong else { return }
+        let player = ApplicationMusicPlayer.shared
+        player.queue = [songInfo.song]
+        try await player.play()
+        isPlaying = true
+    }
+    
+    func stopSong() {
+        let player = ApplicationMusicPlayer.shared
+        player.stop()
+        isPlaying = false
     }
 }
 

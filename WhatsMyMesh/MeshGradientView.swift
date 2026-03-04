@@ -27,9 +27,47 @@ struct MeshGradientView: View {
                         ],
                         colors: hexAsColor
                     )
+                    .clipShape(Capsule())
+                    .rotationEffect(Angle(degrees: 180))
+                    .frame(width: 300, height: 100)
                 }
             }
+            
+            if let songInfo = meshManager.currentSong {
+                VStack(spacing: 8) {
+                    Text(songInfo.title)
+                        .font(.headline)
+                    Text(songInfo.artistName)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                    
+                    Button {
+                        Task {
+                            if meshManager.isPlaying {
+                                meshManager.stopSong()
+                            } else {
+                                try await meshManager.playSong()
+                            }
+                        }
+                    } label: {
+                        Image(systemName: meshManager.isPlaying
+                              ? "stop.circle.fill"
+                              : "play.circle.fill")
+                            .font(.largeTitle)
+                    }
+                }
+                .padding()
+            } else if !meshManager.hexAsColor.isEmpty {
+                HStack {
+                    ProgressView()
+                    Text("Finding a song...")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                .padding()
+            }
         }
+        
     }
 }
 

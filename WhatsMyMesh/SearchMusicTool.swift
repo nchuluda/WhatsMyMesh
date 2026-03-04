@@ -27,7 +27,7 @@ actor SongStore {
 /// The on-device model generates the search query based on the user's selected emotion.
 nonisolated struct SearchMusicTool: Tool {
     let name = "searchMusic"
-    let description = "Search Apple Music for a song matching a mood or query"
+    let description = "Search Apple Music for a song matching the mood"
 
     let songStore: SongStore
 
