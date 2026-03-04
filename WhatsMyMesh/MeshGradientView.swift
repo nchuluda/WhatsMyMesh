@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MeshGradientView: View {
     var hexAsColor: [Color]
-    var meshManager: MeshManager
+    var meshManager: FoundationManager
     
     var body: some View {
         VStack {
@@ -34,7 +34,7 @@ struct MeshGradientView: View {
 }
 
 #Preview {
-    MeshGradientView(hexAsColor: [.red, .blue, .yellow], meshManager: MeshManager())
+    MeshGradientView(hexAsColor: [.red, .blue, .yellow], meshManager: FoundationManager())
 }
 
 

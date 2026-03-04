@@ -13,7 +13,7 @@ struct ContentView: View {
     
     private var emotions = ["Peaceful", "Excited", "Anxious", "Aggressive", "Curious", "Embarassed", "Grief", "Sleepy", "Overwhelmed", "Jealous"]
     
-    var meshManager = MeshManager()
+    var foundationManager = FoundationManager()
     
     var body: some View {
         VStack {
@@ -29,7 +29,7 @@ struct ContentView: View {
             
             Button("Create Mesh") {
                 Task {
-                    try await meshManager.createRandomMesh(for: selectedEmotion)
+                    try await foundationManager.createRandomMesh(for: selectedEmotion)
                   
                 }
                 isShowingMeshSheet = true
@@ -40,9 +40,9 @@ struct ContentView: View {
         }
         .sheet(isPresented: $isShowingMeshSheet) {
             // onDismiss
-            meshManager.hexcodes = []
+            foundationManager.hexcodes = []
         } content: {
-            MeshGradientView(hexAsColor: meshManager.hexAsColor, meshManager: meshManager)
+            MeshGradientView(hexAsColor: foundationManager.hexAsColor, meshManager: foundationManager)
         }
     }
 }
