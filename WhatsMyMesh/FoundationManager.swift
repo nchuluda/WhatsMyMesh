@@ -14,6 +14,8 @@ import SwiftUI
 class FoundationManager {
     private let model = SystemLanguageModel.default
     
+    // MARK: Generate colors
+    
     var hexcodes:[String] = []
     var currentSong: SongInfo?
     var isPlaying: Bool = false

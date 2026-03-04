@@ -10,13 +10,28 @@ import SwiftUI
 struct ContentView: View {
     @State var isShowingMeshSheet = false
     @State private var selectedEmotion: String = "Peaceful"
+    @State private var selectedGemstone: String = "Amethyst"
     
     private var emotions = ["Peaceful", "Excited", "Anxious", "Aggressive", "Curious", "Embarassed", "Grief", "Sleepy", "Overwhelmed", "Jealous"]
+    
+    private var gemstones = ["Garnet", "Amethyst", "Aquamarine", "Diamond", "Emerald", "Pearl", "Ruby", "Peridot", "Sapphire", "Topaz"]
     
     var foundationManager = FoundationManager()
     
     var body: some View {
         VStack {
+            Text("Gemstone Lapidary")
+                .font(.largeTitle)
+            HStack {
+                Text("Selected Gemstone:")
+                Picker(selection: $selectedGemstone, label: Text("Select Gemstone")) {
+                    ForEach(gemstones, id: \.self) {
+                        Text($0)
+                    }
+                }
+                .pickerStyle(.menu)
+            }
+            
             HStack {
                 Text("Selected Emotion:")
                 Picker(selection: $selectedEmotion, label: Text("Select Emotion")) {
@@ -24,17 +39,17 @@ struct ContentView: View {
                         Text($0)
                     }
                 }
-                .pickerStyle(.inline)
+                .pickerStyle(.menu)
             }
             
-            Button("Create Mesh") {
+            Button("Make My Gemstone") {
                 Task {
                     try await meshManager.createMeshAndFindSong(for: selectedEmotion)
                     try await meshManager.playSong()
                 }
                 isShowingMeshSheet = true
             }
-            .buttonStyle(.bordered)
+            .buttonStyle(.borderedProminent)
             .tint(.green)
             .padding()
         }
