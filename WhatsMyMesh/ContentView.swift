@@ -8,64 +8,76 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var isShowingMeshSheet = false
+    @State private var isShowingMeshSheet = false
     @State private var selectedEmotion: String = "Peaceful"
     @State private var selectedGemstone: String = "Amethyst"
-    
-    private var emotions = ["Peaceful", "Excited", "Anxious", "Aggressive", "Curious", "Embarassed", "Grief", "Sleepy", "Overwhelmed", "Jealous"]
-    
-    private var gemstones = ["Garnet", "Amethyst", "Aquamarine", "Diamond", "Emerald", "Pearl", "Ruby", "Peridot", "Sapphire", "Topaz"]
-    
+
+    private let emotions = ["Peaceful", "Excited", "Anxious", "Aggressive", "Curious", "Embarassed", "Grief", "Sleepy", "Overwhelmed", "Jealous"]
+
+    private let gemstones = ["Garnet", "Amethyst", "Aquamarine", "Diamond", "Emerald", "Pearl", "Ruby", "Peridot", "Sapphire", "Topaz"]
+
     var foundationManager = FoundationManager()
-    
+
     var body: some View {
-        VStack {
-            Text("Gemstone Lapidary")
-                .font(.largeTitle)
-            HStack {
-                Text("Selected Gemstone:")
-                Picker(selection: $selectedGemstone, label: Text("Select Gemstone")) {
-                    ForEach(gemstones, id: \.self) {
-                        Text($0)
+        NavigationStack {
+            Form {
+                // Hero gemstone visual
+                Section {
+                    HStack {
+                        Spacer()
+                        SkeletonGemstoneView()
+                            .frame(width: 120, height: 144)
+                        Spacer()
+                    }
+                    .listRowBackground(Color.clear)
+                }
+
+                Section("Gemstone") {
+                    Picker("Type", selection: $selectedGemstone) {
+                        ForEach(gemstones, id: \.self) {
+                            Text($0)
+                        }
                     }
                 }
-                .pickerStyle(.menu)
-            }
-            
-            HStack {
-                Text("Selected Emotion:")
-                Picker(selection: $selectedEmotion, label: Text("Select Emotion")) {
-                    ForEach(emotions, id: \.self) {
-                        Text($0)
+
+                Section("Mood") {
+                    Picker("Emotion", selection: $selectedEmotion) {
+                        ForEach(emotions, id: \.self) {
+                            Text($0)
+                        }
                     }
                 }
-                .pickerStyle(.menu)
-            }
-            
-            Button("Make My Gemstone") {
-                Task {
-                    try await meshManager.createMeshAndFindSong(for: selectedGemstone)
-                    try await foundationManager.generatePoem(emotion: selectedEmotion, gemstone: selectedGemstone)
-                    try await meshManager.playSong()
+
+                Section {
+                    Button {
+                        Task {
+                            try await foundationManager.createMeshAndFindSong(for: selectedGemstone)
+                            try await foundationManager.generatePoem(emotion: selectedEmotion, gemstone: selectedGemstone)
+                            try await foundationManager.playSong()
+                        }
+                        isShowingMeshSheet = true
+                    } label: {
+                        Text("Make My Gemstone")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
                 }
-                isShowingMeshSheet = true
             }
-            .buttonStyle(.borderedProminent)
-            .tint(.green)
-            .padding()
+            .navigationTitle("Gemstone Lapidary")
         }
         .task {
-            await meshManager.requestMusicAuthorization()
+            await foundationManager.requestMusicAuthorization()
         }
         .sheet(isPresented: $isShowingMeshSheet) {
-            meshManager.hexcodes = []
-            meshManager.currentSong = nil
-            meshManager.stopSong()
+            foundationManager.hexcodes = []
+            foundationManager.currentSong = nil
+            foundationManager.stopSong()
             foundationManager.poem = nil
-            meshManager.stopSong()
-            
+            foundationManager.stopSong()
         } content: {
-            MeshGradientView(hexAsColor: meshManager.hexAsColor, meshManager: meshManager)
+            MeshGradientView(hexAsColor: foundationManager.hexAsColor, meshManager: foundationManager)
         }
     }
 }

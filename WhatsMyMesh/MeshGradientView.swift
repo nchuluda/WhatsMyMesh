@@ -14,103 +14,86 @@ struct MeshGradientView: View {
     var body: some View {
         VStack {
             if meshManager.hexAsColor.isEmpty {
-                ProgressView()
+                Text("Cutting Your Gem 💎")
+                    .font(.largeTitle)
+                    .bold()
+                SkeletonGemstoneView()
             } else {
+                
+                if let songInfo = meshManager.currentSong {
+                    VStack(spacing: 8) {
+                        Text(songInfo.title)
+                            .font(.headline)
+                        Text(songInfo.artistName)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                }
                 TimelineView(.animation) { timeline in
                     let x = (sin(timeline.date.timeIntervalSince1970) + 1) / 2
                     
                     MeshGradient(width: 3, height: 3,
-                        points: [
-                        [0, 0], [0.5, 0], [1, 0],
-                        [0, 0.5], [Float(x), 0.5], [1, 0.5],
-                        [0, 1], [0.5, 1], [1, 1]
-                        ],
-                        colors: hexAsColor
+                                 points: [
+                                    [0, 0], [0.5, 0], [1, 0],
+                                    [0, 0.5], [Float(x), 0.5], [1, 0.5],
+                                    [0, 1], [0.5, 1], [1, 1]
+                                 ],
+                                 colors: hexAsColor
                     )
-                    .clipShape(Capsule())
-                    .rotationEffect(Angle(degrees: 180))
-                    .frame(width: 300, height: 100)
-                }
-            }
-            
-            if let songInfo = meshManager.currentSong {
-                VStack(spacing: 8) {
-                    Text(songInfo.title)
-                        .font(.headline)
-                    Text(songInfo.artistName)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                    .clipShape(GemstoneShape())
+                    .overlay {
+                        GemstoneFacets()
+                            .stroke(.white.opacity(0.35), lineWidth: 1)
+                    }
+                    .overlay {
+                        GemstoneShape()
+                            .stroke(.white.opacity(0.6), lineWidth: 2)
+                    }
+                    .aspectRatio(5/6, contentMode: .fit)
+                    .padding()
                     
-                    Button {
-                        Task {
-                            if meshManager.isPlaying {
-                                meshManager.stopSong()
-                            } else {
-                                try await meshManager.playSong()
-                            }
-                        }
-                    } label: {
-                        Image(systemName: meshManager.isPlaying
-                              ? "stop.circle.fill"
-                              : "play.circle.fill")
-                            .font(.largeTitle)
+                    if let poem = meshManager.poem {
+                        Text(poem)
                     }
                 }
-                .padding()
-            } else if !meshManager.hexAsColor.isEmpty {
-                HStack {
-                    ProgressView()
-                    Text("Finding a song...")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-                .padding()
-                            .font(.largeTitle)
-                    }
-                }
-                .padding()
-            } else if !meshManager.hexAsColor.isEmpty {
-                HStack {
-                    ProgressView()
-                    Text("Finding a song...")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-                .padding()
             }
         }
         
     }
+    
 }
 
+
+
+
 #Preview {
-    MeshGradientView(hexAsColor: [.red, .blue, .yellow], meshManager: FoundationManager())
+    MeshGradientView(hexAsColor: [.red, .blue, .yellow, .green, .blue, .indigo], meshManager: FoundationManager())
 }
 
 
 extension Color {
-  init(hex: String) {
-    let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-    var int: UInt64 = 0
-    Scanner(string: hex).scanHexInt64(&int)
-    let a, r, g, b: UInt64
-    switch hex.count {
-    case 3: // RGB (12-bit)
-      (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
-    case 6: // RGB (24-bit)
-      (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
-    case 8: // ARGB (32-bit)
-      (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
-    default:
-      (a, r, g, b) = (1, 1, 1, 0)
+    init(hex: String) {
+        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var int: UInt64 = 0
+        Scanner(string: hex).scanHexInt64(&int)
+        let a, r, g, b: UInt64
+        switch hex.count {
+        case 3: // RGB (12-bit)
+            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
+        case 6: // RGB (24-bit)
+            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
+        case 8: // ARGB (32-bit)
+            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+        default:
+            (a, r, g, b) = (1, 1, 1, 0)
+        }
+        
+        self.init(
+            .sRGB,
+            red: Double(r) / 255,
+            green: Double(g) / 255,
+            blue:  Double(b) / 255,
+            opacity: Double(a) / 255
+        )
     }
-
-    self.init(
-      .sRGB,
-      red: Double(r) / 255,
-      green: Double(g) / 255,
-      blue:  Double(b) / 255,
-      opacity: Double(a) / 255
-    )
-  }
 }
