@@ -13,6 +13,8 @@ import SwiftUI
 class FoundationManager {
     private let model = SystemLanguageModel.default
     
+    // MARK: Generate colors
+    
     var hexcodes:[String] = []
     
     var hexAsColor: [Color] {
@@ -36,6 +38,29 @@ class FoundationManager {
         hexcodes = response.content.hexCodes
         
         print(response.content.hexCodes)
+    }
+    
+    // MARK: Generate a poem
+    
+    var poem: String = ""
+    
+    func generatePoem(emotion: String, gemstone: String) async throws {
+        let instructions = """
+    Write a haiku inspired by the emotion "\(emotion)" and the gemstone "\(gemstone)".
+    
+    Requirements:
+    - 12–16 lines
+    - Free verse
+    - Vivid sensory imagery
+    - Use the gemstone as a central metaphor
+    - Do not mention instructions
+    - Do not include a title
+    - Do not explain the poem
+    
+    The poem should feel emotionally immersive and cohesive.
+    """
+        
+        
     }
 }
 
